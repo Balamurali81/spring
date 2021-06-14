@@ -1,0 +1,51 @@
+---
+# java spring boot project
+stages:
+  - test
+  - build
+  - deploy
+
+
+# qa_test:
+#   image: maven
+#   stage: build
+#   script:
+#     - mvn test
+#   tags:
+#     - docker
+#   environment:
+#     name : qa
+#   except:
+#   - release
+image: maven
+
+qa_build:
+  tags:
+    - docker
+  environment:
+    name: qa
+  stage: build
+  script:
+    - mvn package
+    - ls -altr
+    - pwd
+  artifacts:
+    paths:
+      - target/*.jar
+  except:
+  - release
+
+qa_deploy:
+  image: tomcat
+  tags:
+    - docker
+  environment:
+    name : qa
+  stage: deploy
+  artifacts:
+    paths:
+      - qa
+  script:
+  - 
+  except:
+  - release
